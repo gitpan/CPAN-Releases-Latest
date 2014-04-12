@@ -1,0 +1,31 @@
+---
+abstract: 'a list of the latest release(s) of all dists on CPAN, including dev releases'
+author:
+  - 'Neil Bowers <neilb@cpan.org>'
+build_requires:
+  Test::More: '0.88'
+  strict: '0'
+  warnings: '0'
+configure_requires:
+  ExtUtils::MakeMaker: '6.30'
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 5.015, CPAN::Meta::Converter version 2.133380'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: CPAN-Releases-Latest
+requires:
+  CPAN::DistnameInfo: '0'
+  Carp: '0'
+  File::HomeDir: '0'
+  File::Spec::Functions: '0'
+  MetaCPAN::Client: '1.001000'
+  Moo: '0'
+  Time::Duration::Parse: '0'
+  autodie: '0'
+  perl: '5.006'
+resources:
+  homepage: https://github.com/neilbowers/CPAN-Releases-Latest
+  repository: https://github.com/neilbowers/CPAN-Releases-Latest.git
+version: '0.01'
