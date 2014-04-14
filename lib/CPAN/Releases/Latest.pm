@@ -1,5 +1,5 @@
 package CPAN::Releases::Latest;
-$CPAN::Releases::Latest::VERSION = '0.01';
+$CPAN::Releases::Latest::VERSION = '0.02';
 use 5.006;
 use Moo;
 use File::HomeDir;
@@ -53,8 +53,15 @@ sub BUILD
 
 sub _build_cached_index
 {
-    my $self = shift;
+    my $self     = shift;
+    my $distdata = $self->_get_release_info_from_metacpan();
 
+    $self->_write_cache_file($distdata);
+}
+
+sub _get_release_info_from_metacpan
+{
+    my $self       = shift;
     my $client     = MetaCPAN::Client->new();
     my $query      = {
                         either => [
@@ -78,7 +85,6 @@ sub _build_cached_index
                          released  => {},
                          developer => {},
                      };
-    my %seen;
 
     while (my $result = $scroller->next) {
         my $release  = $result->{fields};
@@ -93,13 +99,24 @@ sub _build_cached_index
 
         next unless !exists($slice->{ $distname })
                  || $release->{stat}->{mtime} > $slice->{$distname}->{time};
-        $seen{ $distname }++;
         $slice->{ $distname } = {
                                     path => $path,
                                     time => $release->{stat}->{mtime},
                                     size => $release->{stat}->{size},
                                 };
     }
+
+    return $distdata;
+}
+
+sub _write_cache_file
+{
+    my $self     = shift;
+    my $distdata = shift;
+    my %seen;
+
+    $seen{$_} = 1 for keys(%{ $distdata->{released} });
+    $seen{$_} = 1 for keys(%{ $distdata->{developer} });
 
     open(my $fh, '>', $self->cache_path);
     print $fh "#FORMAT: $FORMAT_REVISION\n";
@@ -143,13 +160,13 @@ sub release_iterator
 
 =head1 NAME
 
-CPAN::Releases::Latest - a list of the latest release(s) of all dists on CPAN, including dev releases
+CPAN::Releases::Latest - find latest release(s) of all dists on CPAN, including dev releases
 
 =head1 SYNOPSIS
 
  use CPAN::Releases::Latest;
  
- my $latest   = CPAN::Releases::Latest->new();
+ my $latest   = CPAN::Releases::Latest->new(max_age => '1 day');
  my $iterator = $latest->release_iterator();
  
  while (my $release = $iterator->next_release) {
@@ -168,6 +185,26 @@ This module uses the MetaCPAN API to construct a list of all dists on CPAN.
 It will let you iterate across these, returning the latest release of the dist.
 If the latest release is a developer release, then you'll first get back the
 non-developer release (if there is one), and then you'll get back the developer release.
+
+When you instantiate this class, you can specify the C<max_age> of
+the generated index, which is cached locally. You can specify the age
+using any of the expressions supported by L<Time::Duration::Parse>:
+
+ 5 minutes
+ 1 hour and 30 minutes
+ 2d
+ 3600
+
+If no units are given, it will be interpreted as a number of seconds.
+The default for max age is 1 day.
+
+=head1 SEE ALSO
+
+L<CPAN::ReleaseHistory> provides a similar iterator, but for all releases
+ever made to CPAN, even those that are no longer on CPAN.
+
+L<BackPAN::Index> is another way to get information about all releases
+ever made to CPAN.
 
 =head1 REPOSITORY
 

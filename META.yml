@@ -1,5 +1,5 @@
 ---
-abstract: 'a list of the latest release(s) of all dists on CPAN, including dev releases'
+abstract: 'find latest release(s) of all dists on CPAN, including dev releases'
 author:
   - 'Neil Bowers <neilb@cpan.org>'
 build_requires:
@@ -28,4 +28,4 @@ requires:
 resources:
   homepage: https://github.com/neilbowers/CPAN-Releases-Latest
   repository: https://github.com/neilbowers/CPAN-Releases-Latest.git
-version: '0.01'
+version: '0.02'
