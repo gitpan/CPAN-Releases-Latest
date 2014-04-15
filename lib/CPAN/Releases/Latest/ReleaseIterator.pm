@@ -1,5 +1,5 @@
 package CPAN::Releases::Latest::ReleaseIterator;
-$CPAN::Releases::Latest::ReleaseIterator::VERSION = '0.02';
+$CPAN::Releases::Latest::ReleaseIterator::VERSION = '0.03';
 use 5.006;
 use Moo;
 use CPAN::Releases::Latest;
@@ -20,7 +20,7 @@ sub next_release
     my $fh;
 
     if (not defined($fh = $self->_fh)) {
-        open($fh, '<', $self->latest->path // $self->latest->cache_path);
+        open($fh, '<', $self->latest->path || $self->latest->cache_path);
         my $header = <$fh>;
         $self->_fh($fh);
     }

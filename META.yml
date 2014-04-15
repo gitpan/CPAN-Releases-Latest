@@ -28,4 +28,4 @@ requires:
 resources:
   homepage: https://github.com/neilbowers/CPAN-Releases-Latest
   repository: https://github.com/neilbowers/CPAN-Releases-Latest.git
-version: '0.02'
+version: '0.03'

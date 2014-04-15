@@ -1,5 +1,5 @@
 package CPAN::Releases::Latest;
-$CPAN::Releases::Latest::VERSION = '0.02';
+$CPAN::Releases::Latest::VERSION = '0.03';
 use 5.006;
 use Moo;
 use File::HomeDir;
