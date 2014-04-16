@@ -1,10 +1,10 @@
 package CPAN::Releases::Latest;
-$CPAN::Releases::Latest::VERSION = '0.03';
+$CPAN::Releases::Latest::VERSION = '0.04';
 use 5.006;
 use Moo;
 use File::HomeDir;
 use File::Spec::Functions 'catfile';
-use MetaCPAN::Client 1.001000;
+use MetaCPAN::Client 1.001001;
 use CPAN::DistnameInfo;
 use Carp;
 use autodie;
@@ -80,29 +80,27 @@ sub _get_release_info_from_metacpan
                          fields => [qw(name version date status maturity stat download_url)]
                      };
     my $result_set = $client->release($query, $params);
-    my $scroller   = $result_set->scroller;
     my $distdata   = {
                          released  => {},
                          developer => {},
                      };
 
-    while (my $result = $scroller->next) {
-        my $release  = $result->{fields};
-        my $maturity = $release->{maturity};
+    while (my $release = $result_set->next) {
+        my $maturity = $release->maturity;
         my $slice    = $distdata->{$maturity};
-        my $path     = $release->{download_url};
+        my $path     = $release->download_url;
            $path     =~ s!^.*/authors/id/!!;
         my $distinfo = CPAN::DistnameInfo->new($path);
         my $distname = defined($distinfo) && defined($distinfo->dist)
                        ? $distinfo->dist
-                       : $release->{metadata}->{name};
+                       : $release->name;
 
         next unless !exists($slice->{ $distname })
-                 || $release->{stat}->{mtime} > $slice->{$distname}->{time};
+                 || $release->stat->{mtime} > $slice->{$distname}->{time};
         $slice->{ $distname } = {
                                     path => $path,
-                                    time => $release->{stat}->{mtime},
-                                    size => $release->{stat}->{size},
+                                    time => $release->stat->{mtime},
+                                    size => $release->stat->{size},
                                 };
     }
 
@@ -182,12 +180,13 @@ CPAN::Releases::Latest - find latest release(s) of all dists on CPAN, including 
 VERY MUCH AN ALPHA. ALL THINGS MAY CHANGE.
 
 This module uses the MetaCPAN API to construct a list of all dists on CPAN.
+The generated index is cached locally.
 It will let you iterate across these, returning the latest release of the dist.
 If the latest release is a developer release, then you'll first get back the
 non-developer release (if there is one), and then you'll get back the developer release.
 
 When you instantiate this class, you can specify the C<max_age> of
-the generated index, which is cached locally. You can specify the age
+the generated index. You can specify the age
 using any of the expressions supported by L<Time::Duration::Parse>:
 
  5 minutes
@@ -197,6 +196,10 @@ using any of the expressions supported by L<Time::Duration::Parse>:
 
 If no units are given, it will be interpreted as a number of seconds.
 The default for max age is 1 day.
+
+If you already have a cached copy of the index, and it is less than
+the specified age, then we'll use your cached copy and not even
+check with MetaCPAN.
 
 =head1 SEE ALSO
 

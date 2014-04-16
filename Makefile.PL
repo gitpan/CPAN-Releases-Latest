@@ -25,7 +25,7 @@ my %WriteMakefileArgs = (
     "Carp" => 0,
     "File::HomeDir" => 0,
     "File::Spec::Functions" => 0,
-    "MetaCPAN::Client" => "1.001000",
+    "MetaCPAN::Client" => "1.001001",
     "Moo" => 0,
     "Time::Duration::Parse" => 0,
     "autodie" => 0
@@ -35,7 +35,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.03",
+  "VERSION" => "0.04",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -47,7 +47,7 @@ my %FallbackPrereqs = (
   "Carp" => 0,
   "File::HomeDir" => 0,
   "File::Spec::Functions" => 0,
-  "MetaCPAN::Client" => "1.001000",
+  "MetaCPAN::Client" => "1.001001",
   "Moo" => 0,
   "Test::More" => "0.88",
   "Time::Duration::Parse" => 0,

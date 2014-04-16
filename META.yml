@@ -20,7 +20,7 @@ requires:
   Carp: '0'
   File::HomeDir: '0'
   File::Spec::Functions: '0'
-  MetaCPAN::Client: '1.001000'
+  MetaCPAN::Client: '1.001001'
   Moo: '0'
   Time::Duration::Parse: '0'
   autodie: '0'
@@ -28,4 +28,4 @@ requires:
 resources:
   homepage: https://github.com/neilbowers/CPAN-Releases-Latest
   repository: https://github.com/neilbowers/CPAN-Releases-Latest.git
-version: '0.03'
+version: '0.04'
