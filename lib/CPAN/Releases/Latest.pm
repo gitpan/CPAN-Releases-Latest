@@ -1,5 +1,5 @@
 package CPAN::Releases::Latest;
-$CPAN::Releases::Latest::VERSION = '0.04';
+$CPAN::Releases::Latest::VERSION = '0.05';
 use 5.006;
 use Moo;
 use File::HomeDir;
@@ -152,6 +152,55 @@ sub release_iterator
 
     require CPAN::Releases::Latest::ReleaseIterator;
     return CPAN::Releases::Latest::ReleaseIterator->new( latest => $self, @_ );
+}
+
+sub _open_file
+{
+    my $self       = shift;
+    my $options    = @_ > 0 ? shift : {};
+    my $filename   = $self->cache_path;
+    my $whatfile   = 'cached';
+    my $from_cache = 1;
+    my $fh;
+
+    if (defined($self->path)) {
+        $filename   = $self->path;
+        $from_cache = 0;
+        $whatfile   = 'passed';
+    }
+
+    open($fh, '<', $filename);
+    my $line = <$fh>;
+    if ($line !~ m!^#FORMAT: (\d+)$!) {
+        croak "unexpected format of first line - should give format";
+    }
+    my $file_revision = $1;
+
+    if ($file_revision > $FORMAT_REVISION) {
+        croak "the $whatfile file has a later format revision ($file_revision) ",
+              "than this version of ", __PACKAGE__,
+              " supports ($FORMAT_REVISION). Maybe it's time to upgrade?\n";
+    }
+
+    if ($file_revision < $FORMAT_REVISION) {
+        if ($whatfile eq 'passed') {
+            croak "the passed file $filename is from an older version of ",
+                  __PACKAGE__, "\n";
+        }
+
+        # The locally cached version was written by an older version of
+        # this module, but is still within the max_age constraint, which
+        # is how we ended up here. We rebuild the cached index and call
+        # this method again. But if we're here because we were trying to
+        # rebuild the index, then bomb out, because This Should Never Happen[TM].
+        if ($options->{rebuilding}) {
+            croak "failed to rebuild the cached index with the expected version\n";
+        }
+        $self->_build_cached_index();
+        return $self->_open_file({ rebuilding => 1});
+    }
+
+    return $fh;
 }
 
 1;

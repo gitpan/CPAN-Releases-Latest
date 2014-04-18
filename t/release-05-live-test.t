@@ -1,7 +1,15 @@
 #!perl
 
+BEGIN {
+  unless ($ENV{RELEASE_TESTING}) {
+    require Test::More;
+    Test::More::plan(skip_all => 'these tests are for release candidate testing');
+  }
+}
+
+
 #
-# 03-live-test.t
+# 05-live-test.t
 #
 # Iterate across all releases and look for the three dists that
 # were last released by AMOSS in 1995. Check that we get the expected
@@ -64,4 +72,3 @@ sub render_dists
     }
     return $string;
 }
-

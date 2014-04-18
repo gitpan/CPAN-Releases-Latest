@@ -11,4 +11,9 @@ lib/CPAN/Releases/Latest/Release.pm
 lib/CPAN/Releases/Latest/ReleaseIterator.pm
 t/01-require.t
 t/02-bad-path.t
-t/03-live-test.t
+t/03-later-revision.t
+t/04-earlier-revision.t
+t/data/03-later-revision.txt
+t/data/04-earlier-revision.txt
+t/release-05-live-test.t
+t/release-06-rebuild-cache.t

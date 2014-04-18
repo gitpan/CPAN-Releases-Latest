@@ -1,10 +1,9 @@
 package CPAN::Releases::Latest::ReleaseIterator;
-$CPAN::Releases::Latest::ReleaseIterator::VERSION = '0.04';
+$CPAN::Releases::Latest::ReleaseIterator::VERSION = '0.05';
 use 5.006;
 use Moo;
 use CPAN::Releases::Latest;
 use CPAN::Releases::Latest::Release;
-use autodie;
 
 has 'latest' =>
     (
@@ -20,8 +19,7 @@ sub next_release
     my $fh;
 
     if (not defined($fh = $self->_fh)) {
-        open($fh, '<', $self->latest->path || $self->latest->cache_path);
-        my $header = <$fh>;
+        $fh = $self->latest->_open_file();
         $self->_fh($fh);
     }
 
