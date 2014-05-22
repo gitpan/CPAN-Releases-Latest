@@ -1,5 +1,5 @@
 package CPAN::Releases::Latest::Source::MetaCPAN;
-$CPAN::Releases::Latest::Source::MetaCPAN::VERSION = '0.05_01';
+$CPAN::Releases::Latest::Source::MetaCPAN::VERSION = '0.06';
 use 5.006;
 use Moo;
 use MetaCPAN::Client 1.001001;
